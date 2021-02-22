@@ -1,7 +1,20 @@
 import {Col, Form, Button, Container, Row, InputGroup} from "react-bootstrap";
+import {useEffect, useState} from "react";
 
 
 const StepOne = () => {
+
+    const [listOfCountries, setListOfCountries] = useState([]);
+    const [shippingAddressToggled, setShippingAddressToggled] = useState(false);
+
+    useEffect(() => {
+        fetch("/api/location/countries")
+            .then(response => response.json())
+            .then((data) => {
+                setListOfCountries(data)
+            })
+    }, [])
+
     return (
         <Container fluid={"sm"}>
             <Row className="my-3">
@@ -45,9 +58,7 @@ const StepOne = () => {
                                     <InputGroup.Text>Country</InputGroup.Text>
                                 </InputGroup.Prepend>
                                 <Form.Control as="select" defaultValue="Country...">
-                                    <option>Iran</option>
-                                    <option>Armenia</option>
-                                    <option>...</option>
+                                    {listOfCountries.map(country => <option key={country}>{country}</option>)}
                                 </Form.Control>
                             </InputGroup>
                         </Form.Group>
@@ -92,6 +103,7 @@ const StepOne = () => {
                             <Form.Check
                                 type="switch"
                                 label="Use filled data for shipping"
+                                onClick={() => setShippingAddressToggled(!shippingAddressToggled)}
                             />
                         </Form.Group>
 
@@ -102,7 +114,7 @@ const StepOne = () => {
                                 <InputGroup.Prepend>
                                     <InputGroup.Text>Shipping country</InputGroup.Text>
                                 </InputGroup.Prepend>
-                                <Form.Control as="select" defaultValue="Country...">
+                                <Form.Control as="select" defaultValue="Country..." disabled={!shippingAddressToggled}>
                                     <option>Iran</option>
                                     <option>Armenia</option>
                                     <option>...</option>
@@ -117,7 +129,7 @@ const StepOne = () => {
                                 <InputGroup.Prepend>
                                     <InputGroup.Text>Shipping city</InputGroup.Text>
                                 </InputGroup.Prepend>
-                                <Form.Control as="select" defaultValue="City...">
+                                <Form.Control as="select" defaultValue="City..." disabled={!shippingAddressToggled}>
                                     <option>Tehran</option>
                                     <option>Yerevan</option>
                                     <option>...</option>
@@ -129,7 +141,7 @@ const StepOne = () => {
                         {/* address */}
                         <Form.Group controlId="formShippingAddress">
                             <InputGroup hasValidation>
-                                <Form.Control type="text" required isInvalid placeholder="Enter your shipping address"/>
+                                <Form.Control type="text" required isInvalid placeholder="Enter your shipping address" disabled={!shippingAddressToggled}/>
                                 <Form.Control.Feedback type="invalid">
                                     Please choose a username.
                                 </Form.Control.Feedback>
@@ -140,7 +152,7 @@ const StepOne = () => {
                         {/* postal code */}
                         <Form.Group controlId="formShippingPostalCode">
                             <InputGroup hasValidation>
-                                <Form.Control type="text" required isInvalid placeholder={"Enter your shipping postal code"}/>
+                                <Form.Control type="text" required isInvalid placeholder={"Enter your shipping postal code"} disabled={!shippingAddressToggled}/>
                                 <Form.Control.Feedback type="invalid">
                                     Please choose a username.
                                 </Form.Control.Feedback>
