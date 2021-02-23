@@ -253,7 +253,6 @@ const StepOne = () => {
                               isValid={wip.shippingZipCode}
                               value={wip.shippingZipCode}
                               onChange={updateWip}
-                              pattern="[0-9]{5}"
                               name="shippingZipCode"
                               required
                 />
