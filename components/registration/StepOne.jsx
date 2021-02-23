@@ -17,13 +17,31 @@ const StepOne = () => {
     address: '',
     zipCode: '',
     shippingAddressToggled: false,
+    shippingAddress: '',
     shippingCountry: '',
     shippingCity: '',
     shippingZipCode: '',
   });
 
   const updateWip = (e) => {
-    setWip({...wip, [e.target.name]: e.target.value});
+    const name = e.target.name;
+    let value = e.target.value;
+    if (name === "shippingAddressToggled") {
+      value = e.target.checked;
+
+      if (value) {
+        return setWip({
+          ...wip,
+          [name]: value,
+          shippingAddress: wip.address,
+          shippingCountry: wip.country,
+          shippingCity: wip.city,
+          shippingZipCode: wip.zipCode,
+        });
+      }
+    }
+
+    setWip({...wip, [name]: value});
   }
 
   const getCity = (country) => fetch(`/api/location/city/${country}`)
@@ -34,14 +52,14 @@ const StepOne = () => {
     fetch("/api/location/countries")
       .then(response => response.json())
       .then((countries) => {
-        updateData({ ...data, countries });
+        updateData({...data, countries});
       });
   }, []);
 
   useEffect(() => {
     if (wip.country) {
       getCity(wip.country).then(city => {
-        updateData({ ...data, cities: [city] });
+        updateData({...data, cities: [city]});
         setWip({...wip, city: wip.city || city});
       });
     }
@@ -51,7 +69,7 @@ const StepOne = () => {
     if (wip.shippingCountry) {
       getCity(wip.shippingCountry)
         .then((city) => {
-          updateData({ ...data, shippingCities: [city] });
+          updateData({...data, shippingCities: [city]});
           setWip({...wip, shippingCity: wip.shippingCity || city});
         });
     }
@@ -112,7 +130,7 @@ const StepOne = () => {
                 </InputGroup.Prepend>
                 <Form.Control as="select" name="country" onChange={updateWip}>
                   {data.countries.map(country => <option key={country}
-                                                          selected={wip.country === country}>
+                                                         selected={wip.country === country}>
                     {country}
                   </option>)}
                 </Form.Control>
@@ -135,7 +153,7 @@ const StepOne = () => {
             {/* address */}
             <Form.Group controlId="formAddress">
               <InputGroup hasValidation>
-                <Form.Control type="text" required isInvalid={wip.address} placeholder="Enter your address"
+                <Form.Control type="text" required isValid={wip.address} placeholder="Enter your address"
                               value={wip.address}
                               onChange={updateWip}
                               name="address"/>
@@ -148,10 +166,15 @@ const StepOne = () => {
             {/* postal code */}
             <Form.Group controlId="formPostalCode">
               <InputGroup hasValidation>
-                <Form.Control type="number" required isInvalid placeholder={"Enter your postal code"}
+                <Form.Control type="text"
+                              placeholder={"Enter your postal code"}
                               value={wip.zipCode}
                               onChange={updateWip}
-                              name="zipCode"/>
+                              pattern="[0-9]{5}"
+                              name="zipCode"
+                              isValid={wip.zipCode}
+                              required
+                />
                 <Form.Control.Feedback type="invalid">
                   Please choose a username.
                 </Form.Control.Feedback>
@@ -180,7 +203,7 @@ const StepOne = () => {
                 <Form.Control as="select" disabled={wip.shippingAddressToggled} onChange={updateWip}
                               name="shippingCountry">
                   {data.countries.map(country => <option key={country}
-                                                          selected={wip.shippingCountry === country}>
+                                                         selected={wip.shippingCountry === country}>
                     {country}
                   </option>)}
                 </Form.Control>
@@ -196,7 +219,8 @@ const StepOne = () => {
                 </InputGroup.Prepend>
                 <Form.Control as="select" disabled={wip.shippingAddressToggled} onChange={updateWip}
                               name="shippingCity">
-                  {data.shippingCities.map(city => <option key={city} selected={wip.shippingCity === city}>{city}</option>)}
+                  {data.shippingCities.map(city => <option key={city}
+                                                           selected={wip.shippingCity === city}>{city}</option>)}
                 </Form.Control>
               </InputGroup>
             </Form.Group>
@@ -205,7 +229,7 @@ const StepOne = () => {
             {/* address */}
             <Form.Group controlId="formShippingAddress">
               <InputGroup hasValidation>
-                <Form.Control type="text" isInvalid={wip.shippingAddress}
+                <Form.Control type="text" isValid={wip.shippingAddress}
                               placeholder="Enter your shipping address"
                               value={wip.shippingAddress}
                               disabled={wip.shippingAddressToggled}
@@ -223,12 +247,13 @@ const StepOne = () => {
             {/* postal code */}
             <Form.Group controlId="formShippingPostalCode">
               <InputGroup hasValidation>
-                <Form.Control type="number"
+                <Form.Control type="text"
                               placeholder={"Enter your shipping postal code"}
                               disabled={wip.shippingAddressToggled}
-                              isInvalid={wip.shippingZipCode}
+                              isValid={wip.shippingZipCode}
                               value={wip.shippingZipCode}
                               onChange={updateWip}
+                              pattern="[0-9]{5}"
                               name="shippingZipCode"
                               required
                 />
