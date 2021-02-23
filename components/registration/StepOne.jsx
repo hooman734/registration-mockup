@@ -5,7 +5,12 @@ import {useEffect, useState} from "react";
 const StepOne = () => {
 
     const [listOfCountries, setListOfCountries] = useState([]);
+    const [listOfCities, setListOfCities] = useState([]);
     const [shippingAddressToggled, setShippingAddressToggled] = useState(false);
+
+    const [selectedCountry, setSelectedCountry] = useState("");
+    const [selectedCity, setSelectedCity] = useState("")
+
 
     useEffect(() => {
         fetch("/api/location/countries")
@@ -14,6 +19,22 @@ const StepOne = () => {
                 setListOfCountries(data)
             })
     }, [])
+
+    useEffect(() => {
+        try {
+            if (selectedCountry) {
+                fetch(`/api/location/city/${selectedCountry}`)
+                    .then(response => response.json())
+                    .then((data) => {
+                        setListOfCities([data["name"]])
+                        setSelectedCity(data["name"])
+                    })
+            }
+        } catch (e) {
+            console.log("retrieving city list was unsuccessful!")
+        }
+    }, [selectedCountry, selectedCity, listOfCountries])
+
 
     return (
         <Container fluid={"sm"}>
@@ -24,7 +45,7 @@ const StepOne = () => {
                 </Col>
                 <Col>
                     <h1 className="text-right text-muted">
-                        <i className="fas fa-user"></i>
+                        <i className="fas fa-user"/>
                     </h1>
                 </Col>
             </Row>
@@ -34,7 +55,7 @@ const StepOne = () => {
                         {/* first name field */}
                         <Form.Group controlId="formFirstname">
                             <InputGroup hasValidation>
-                                <Form.Control type="text" placeholder={"Enter your first name"} required isInvalid />
+                                <Form.Control type="text" placeholder={"Enter your first name"} required isValid />
                                 <Form.Control.Feedback type="valid">
                                     Please choose a username.
                                 </Form.Control.Feedback>
@@ -44,7 +65,7 @@ const StepOne = () => {
                         {/* last name field */}
                         <Form.Group controlId="formLastname">
                             <InputGroup hasValidation>
-                                <Form.Control type="text" required isInvalid placeholder="Enter your last name"/>
+                                <Form.Control type="text" required isValid placeholder="Enter your last name"/>
                                 <Form.Control.Feedback type="invalid" >
                                     Please choose a username.
                                 </Form.Control.Feedback>
@@ -57,7 +78,7 @@ const StepOne = () => {
                                 <InputGroup.Prepend>
                                     <InputGroup.Text>Country</InputGroup.Text>
                                 </InputGroup.Prepend>
-                                <Form.Control as="select" defaultValue="Country...">
+                                <Form.Control as="select" defaultValue={selectedCountry} onChange={e => setSelectedCountry(e.target.value)}>
                                     {listOfCountries.map(country => <option key={country}>{country}</option>)}
                                 </Form.Control>
                             </InputGroup>
@@ -69,9 +90,8 @@ const StepOne = () => {
                                 <InputGroup.Prepend>
                                     <InputGroup.Text>City</InputGroup.Text>
                                 </InputGroup.Prepend>
-                                <Form.Control as="select" defaultValue="City...">
-                                    <option>Tehran</option>
-                                    <option>Yerevan</option>
+                                <Form.Control as="select" defaultValue={selectedCity} onChange={e => setSelectedCity(e.target.value)}>
+                                    {listOfCities.map(city => <option key={city}>{city}</option>)}
                                     <option>...</option>
                                 </Form.Control>
                             </InputGroup>
@@ -114,10 +134,8 @@ const StepOne = () => {
                                 <InputGroup.Prepend>
                                     <InputGroup.Text>Shipping country</InputGroup.Text>
                                 </InputGroup.Prepend>
-                                <Form.Control as="select" defaultValue="Country..." disabled={!shippingAddressToggled}>
-                                    <option>Iran</option>
-                                    <option>Armenia</option>
-                                    <option>...</option>
+                                <Form.Control as="select" defaultValue="Country..." disabled={shippingAddressToggled}>
+                                    {listOfCountries.map(country => <option key={country}>{country}</option>)}
                                 </Form.Control>
                             </InputGroup>
                         </Form.Group>
@@ -129,10 +147,8 @@ const StepOne = () => {
                                 <InputGroup.Prepend>
                                     <InputGroup.Text>Shipping city</InputGroup.Text>
                                 </InputGroup.Prepend>
-                                <Form.Control as="select" defaultValue="City..." disabled={!shippingAddressToggled}>
-                                    <option>Tehran</option>
-                                    <option>Yerevan</option>
-                                    <option>...</option>
+                                <Form.Control as="select" defaultValue="City..." disabled={shippingAddressToggled}>
+                                    {listOfCities.map(city => <option key={city}>{city}</option>)}
                                 </Form.Control>
                             </InputGroup>
                         </Form.Group>
@@ -141,7 +157,7 @@ const StepOne = () => {
                         {/* address */}
                         <Form.Group controlId="formShippingAddress">
                             <InputGroup hasValidation>
-                                <Form.Control type="text" required isInvalid placeholder="Enter your shipping address" disabled={!shippingAddressToggled}/>
+                                <Form.Control type="text" required isInvalid placeholder="Enter your shipping address" disabled={shippingAddressToggled}/>
                                 <Form.Control.Feedback type="invalid">
                                     Please choose a username.
                                 </Form.Control.Feedback>
@@ -152,7 +168,7 @@ const StepOne = () => {
                         {/* postal code */}
                         <Form.Group controlId="formShippingPostalCode">
                             <InputGroup hasValidation>
-                                <Form.Control type="text" required isInvalid placeholder={"Enter your shipping postal code"} disabled={!shippingAddressToggled}/>
+                                <Form.Control type="text" required isInvalid placeholder={"Enter your shipping postal code"} disabled={shippingAddressToggled}/>
                                 <Form.Control.Feedback type="invalid">
                                     Please choose a username.
                                 </Form.Control.Feedback>
@@ -160,7 +176,7 @@ const StepOne = () => {
                         </Form.Group>
 
                         {/*  submit button */}
-                        <Button variant="primary" type="submit">
+                        <Button variant="primary" type="submit" className={"px-3"}>
                             Submit
                         </Button>
                     </Form>
