@@ -41,7 +41,7 @@ const StepOne = () => {
       }
     }
 
-    let updatedWip = wip;
+    let updatedWip = {...wip, [name]: value };
     if (updatedWip.shippingAddressToggled) {
       updatedWip = {
         ...updatedWip,
@@ -52,7 +52,7 @@ const StepOne = () => {
       }
     }
 
-    setWip({...updatedWip, [name]: value});
+    setWip(updatedWip);
   }
 
   const getCity = (country) => fetch(`/api/location/city/${country}`)
