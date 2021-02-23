@@ -1,5 +1,5 @@
 import {Col, Form, Button, Container, Row, InputGroup} from "react-bootstrap";
-import {useEffect, useState} from "react";
+
 
 
 const StepTwo = () => {
@@ -12,7 +12,7 @@ const StepTwo = () => {
                 </Col>
                 <Col>
                     <h1 className="text-right text-muted">
-                        <i className="fas fa-user"/>
+                        <i className="fas fa-window-restore"/>
                     </h1>
                 </Col>
             </Row>
