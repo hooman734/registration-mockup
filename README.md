@@ -3,7 +3,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 
 ## Deployed here
-[Open it!](https://registration-mockup.vercel.app/registration) on the Vercel server
+[Open it!](https://registration-mockup.vercel.app) on the Vercel server
 
 or
 
