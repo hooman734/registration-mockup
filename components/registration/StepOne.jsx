@@ -2,7 +2,8 @@ import {Col, Form, Button, Container, Row, InputGroup} from "react-bootstrap";
 import {useEffect, useState} from "react";
 
 
-const StepOne = () => {
+const StepOne = (props) => {
+  const { onNext } = props;
 
   const [data, updateData] = useState({
     countries: [],
@@ -53,6 +54,11 @@ const StepOne = () => {
     }
 
     setWip(updatedWip);
+  }
+
+  const formIsValid = () => {
+    // TODO
+    return true;
   }
 
   const getCity = (country) => fetch(`/api/location/city/${country}`)
@@ -274,7 +280,7 @@ const StepOne = () => {
             </Form.Group>
 
             {/*  submit button */}
-            <Button variant="primary" type="submit" className={"px-3"}>
+            <Button variant="primary" type="submit" className={"px-3"} onClick={() => onNext(wip)} disabled={!formIsValid()}>
               Submit
             </Button>
           </Form>

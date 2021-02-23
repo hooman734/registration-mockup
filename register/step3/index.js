@@ -2,7 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Head from "next/head";
 
 
-import StepThree from "../../../components/registration/stepThree";
+import StepThree from "../../components/registration/stepThree";
 
 const Registration = () => {
     return (
