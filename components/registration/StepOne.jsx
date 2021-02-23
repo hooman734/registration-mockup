@@ -101,8 +101,8 @@ const StepOne = () => {
                               value={wip.firstname}
                               isValid={wip.firstname}
                               required/>
-                <Form.Control.Feedback type="valid">
-                  Please choose a username.
+                <Form.Control.Feedback type="invalid">
+                  Please enter valid name format.
                 </Form.Control.Feedback>
               </InputGroup>
             </Form.Group>
@@ -117,7 +117,7 @@ const StepOne = () => {
                               isValid={wip.lastname}
                               required/>
                 <Form.Control.Feedback type="invalid">
-                  Please choose a username.
+                  Please enter valid last name format.
                 </Form.Control.Feedback>
               </InputGroup>
             </Form.Group>
@@ -158,7 +158,7 @@ const StepOne = () => {
                               onChange={updateWip}
                               name="address"/>
                 <Form.Control.Feedback type="invalid">
-                  Please choose a username.
+                  Please enter valid address format.
                 </Form.Control.Feedback>
               </InputGroup>
             </Form.Group>
@@ -176,7 +176,7 @@ const StepOne = () => {
                               required
                 />
                 <Form.Control.Feedback type="invalid">
-                  Please choose a username.
+                  Please enter valid postal code format.
                 </Form.Control.Feedback>
               </InputGroup>
             </Form.Group>
@@ -238,7 +238,7 @@ const StepOne = () => {
                               required
                 />
                 <Form.Control.Feedback type="invalid">
-                  Please choose a username.
+                  Please enter valid address format.
                 </Form.Control.Feedback>
               </InputGroup>
             </Form.Group>
@@ -257,7 +257,7 @@ const StepOne = () => {
                               required
                 />
                 <Form.Control.Feedback type="invalid">
-                  Please choose a username.
+                  Please enter valid postal code format.
                 </Form.Control.Feedback>
               </InputGroup>
             </Form.Group>
