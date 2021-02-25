@@ -2,7 +2,7 @@ import {Col, Form, Button, Container, Row, InputGroup} from "react-bootstrap";
 import {useEffect, useState} from "react";
 
 
-const StepOne = (props) => {
+const StepOne = props => {
   const { onNext } = props;
 
   const [data, updateData] = useState({
@@ -31,23 +31,7 @@ const StepOne = (props) => {
     if (name === "shippingAddressToggled") {
       value = e.target.checked;
     }
-    console.log(`
-    ================================
-    name => ${name} - value => ${value}
-    ----------------------------------
-    firstname => ${wip.firstname}
-    lastname => ${wip.lastname}
-    country => ${wip.country}
-    city => ${wip.city}
-    address => ${wip.address}
-    postalCode => ${wip.postalCode}
-    --------------------------------
-    country => ${wip.shippingCountry}
-    city => ${wip.shippingCity}
-    address => ${wip.shippingAddress}
-    postalCode => ${wip.shippingPostalCode}
-    =================================
-    `)
+
     return setWip({...wip, [name]: value})
   }
 
@@ -131,7 +115,7 @@ const StepOne = (props) => {
       </Row>
       <Row className="mt-2 p-3 bg-light">
         <Col>
-          <Form>
+          <Form novalidate>
             {/* first name field */}
             <Form.Group controlId="formFirstname">
               <InputGroup hasValidation>
@@ -152,14 +136,15 @@ const StepOne = (props) => {
             {/* last name field */}
             <Form.Group controlId="formLastname">
               <InputGroup hasValidation>
-                <Form.Control type="text"
-                              placeholder="Enter your last name"
-                              name={"lastname"}
-                              onChange={updateWip}
-                              value={wip.lastname}
-                              isInvalid={!wip.lastname}
-                              isValid={formIsValid()}
-                              required/>
+                <Form.Control
+                    type="text"
+                    placeholder="Enter your last name"
+                    name={"lastname"}
+                    onChange={updateWip}
+                    value={wip.lastname}
+                    isInvalid={!wip.lastname}
+                    isValid={formIsValid()}
+                    required/>
                 <Form.Control.Feedback type="invalid">
                   Please enter valid last name format.
                 </Form.Control.Feedback>

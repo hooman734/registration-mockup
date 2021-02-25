@@ -1,7 +1,7 @@
 import {Col, Form, Button, Container, Row, InputGroup, FormGroup} from "react-bootstrap";
 import {useEffect, useState} from "react";
 
-const StepThree = (props) => {
+const StepThree = props => {
   const { onPrevious } = props
   const [wip, setWip] = useState({
     fullName: '',
@@ -83,7 +83,7 @@ const StepThree = (props) => {
       </Row>
       <Row className="mt-2 p-3 bg-light">
         <Col>
-          <Form>
+          <Form novalidate>
 
             {/* card number field */}
             <Form.Group controlId="formFirstname">
@@ -96,7 +96,8 @@ const StepThree = (props) => {
                   autocomplete="cc-number"
                   maxlength="25"
                   value={wip.decoratedNumber}
-                  isValid={wip.number}
+                  isValid={formIsValid()}
+                  isInvalid={validateCardNumber(wip.number).length === 0}
                   onChange={updateWip}
                   placeholder={"Enter card number (**** **** **** ****)"} required/>
                 <Form.Control.Feedback type="invalid">
@@ -116,7 +117,8 @@ const StepThree = (props) => {
                 <Form.Control
                   type="text"
                   name="fullName"
-                  isValid={wip.fullName}
+                  isValid={formIsValid()}
+                  isInvalid={!wip.fullName}
                   onChange={updateWip}
                   placeholder={"Enter card owner full name"}
                   required/>
@@ -135,7 +137,8 @@ const StepThree = (props) => {
                   pattern="[0-9\s]{13,19}"
                   autocomplete="cc-number"
                   maxlength="4"
-                  isValid={wip.cvc}
+                  isValid={formIsValid()}
+                  isInvalid={!wip.cvc}
                   onChange={updateWip}
                   placeholder={"Enter CVC number"}
                   required/>
@@ -152,7 +155,8 @@ const StepThree = (props) => {
                 <Form.Control
                   type="date"
                   name="expiration"
-                  isValid={wip.expiration}
+                  isValid={formIsValid()}
+                  isInvalid={!wip.expiration}
                   onChange={updateWip}
                   placeholder={"Enter card expiration date"}
                   required/>

@@ -1,7 +1,7 @@
 import {Col, Form, Button, Container, Row, InputGroup} from "react-bootstrap";
 import {useState} from "react";
 
-const StepTwo = (props) => {
+const StepTwo = props => {
   const { onNext, onPrevious } = props
   const [wip, setWip] = useState({
     email: '',
@@ -19,29 +19,15 @@ const StepTwo = (props) => {
     } else {
       setWip({...wip, [name]: value});
     }
-    console.log(e);
-    console.log(`
-      ================================
-      name => ${name} - value => ${value}
-      ----------------------------------
-      ${e.id}
-      email: '${wip.email}',
-      password: '${wip.password}',
-      passwordConfirmation: '${wip.passwordConfirmation}',
-      isPremiumPackage: '${wip.premiumPackage}',
-      isStandardPackage: '${wip.standardPackage}
-    `)
+
   }
 
   const formIsValid = () => {
-    if (
-        (wip.standardPackage || wip.premiumPackage) &&
+    return (wip.standardPackage || wip.premiumPackage) &&
         (validatePassword(wip.password)) &&
         (validatePassword(wip.passwordConfirmation)) &&
         (passwordsDoMatch()) &&
-        (validateEmail())
-    ) {return true;}
-    else {return false;}
+        (validateEmail());
   }
 
   const passwordsDoMatch = () => {
@@ -74,7 +60,7 @@ const StepTwo = (props) => {
       </Row>
       <Row className="mt-2 p-3 bg-light">
         <Col>
-          <Form>
+          <Form novalidate>
             {/* email address field */}
             <Form.Group controlId="formEmail">
               <InputGroup hasValidation>
