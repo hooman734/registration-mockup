@@ -107,7 +107,6 @@ const StepThree = (props) => {
                   <InputGroup.Text><span className="text-success font-weight-bolder">{validateCardNumber(wip.number)}</span></InputGroup.Text>
                 </InputGroup.Append>) : ''}
 
-
               </InputGroup>
             </Form.Group>
 
@@ -148,6 +147,7 @@ const StepThree = (props) => {
 
             {/* card expiration field */}
             <Form.Group controlId="formFirstname">
+              <Form.Label>Enter your card expiration date</Form.Label>
               <InputGroup hasValidation>
                 <Form.Control
                   type="date"
