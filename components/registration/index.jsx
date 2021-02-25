@@ -1,9 +1,9 @@
 import {Component} from "react";
 import StepOne from "./StepOne";
-import StepThree from "./stepThree";
+import StepThree from "./StepThree";
 import StepTwo from "./StepTwo";
 
-export class Register extends Component {
+export default class Register extends Component {
   constructor(props) {
     super(props);
     this.state = {

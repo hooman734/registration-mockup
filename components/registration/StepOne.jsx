@@ -10,18 +10,19 @@ const StepOne = (props) => {
     cities: [],
     shippingCities: []
   });
+
   const [wip, setWip] = useState({
     firstname: '',
     lastname: '',
     country: '',
     city: '',
     address: '',
-    zipCode: '',
+    postalCode: '',
     shippingAddressToggled: false,
     shippingAddress: '',
     shippingCountry: '',
     shippingCity: '',
-    shippingZipCode: '',
+    shippingPostalCode: '',
   });
 
   const updateWip = (e) => {
@@ -29,36 +30,41 @@ const StepOne = (props) => {
     let value = e.target.value;
     if (name === "shippingAddressToggled") {
       value = e.target.checked;
-
-      if (value) {
-        return setWip({
-          ...wip,
-          [name]: value,
-          shippingAddress: wip.address,
-          shippingCountry: wip.country,
-          shippingCity: wip.city,
-          shippingZipCode: wip.zipCode,
-        });
-      }
     }
-
-    let updatedWip = {...wip, [name]: value };
-    if (updatedWip.shippingAddressToggled) {
-      updatedWip = {
-        ...updatedWip,
-        shippingAddress: wip.address,
-        shippingCountry: wip.country,
-        shippingCity: wip.city,
-        shippingZipCode: wip.zipCode,
-      }
-    }
-
-    setWip(updatedWip);
+    console.log(`
+    ================================
+    name => ${name} - value => ${value}
+    ----------------------------------
+    firstname => ${wip.firstname}
+    lastname => ${wip.lastname}
+    country => ${wip.country}
+    city => ${wip.city}
+    address => ${wip.address}
+    postalCode => ${wip.postalCode}
+    --------------------------------
+    country => ${wip.shippingCountry}
+    city => ${wip.shippingCity}
+    address => ${wip.shippingAddress}
+    postalCode => ${wip.shippingPostalCode}
+    =================================
+    `)
+    return setWip({...wip, [name]: value})
   }
 
   const formIsValid = () => {
-    // TODO
-    return true;
+    if (
+        wip.firstname &&
+        wip.lastname &&
+        wip.country &&
+        wip.city &&
+        wip.address &&
+        wip.postalCode &&
+        wip.shippingCountry &&
+        wip.shippingCity &&
+        wip.shippingAddress &&
+        wip.shippingPostalCode
+    ) {return true;}
+    else {return false;}
   }
 
   const getCity = (country) => fetch(`/api/location/city/${country}`)
@@ -83,7 +89,24 @@ const StepOne = (props) => {
   }, [wip.country, data.countries])
 
   useEffect(() => {
-    if (wip.shippingCountry) {
+    if (wip.shippingAddressToggled) {
+      updateData({
+        ...data,
+        shippingCities: data.cities
+      })
+      setWip({
+        ...wip,
+        shippingAddress: wip.address,
+        shippingCountry: wip.country,
+        shippingCity: wip.city,
+        shippingPostalCode: wip.postalCode,
+      })
+    }
+  }, [wip.shippingAddressToggled, wip.address, wip.city, wip.country, wip.postalCode])
+
+  useEffect(() => {
+    console.log(`-----> ${!wip.shippingAddressToggled}`)
+    if (wip.shippingCountry && !wip.shippingAddressToggled) {
       getCity(wip.shippingCountry)
         .then((city) => {
           updateData({...data, shippingCities: [city]});
@@ -91,6 +114,7 @@ const StepOne = (props) => {
         });
     }
   }, [wip.shippingCountry, data.countries]);
+
 
   return (
     <Container fluid={"sm"}>
@@ -116,7 +140,8 @@ const StepOne = (props) => {
                               name={"firstname"}
                               onChange={updateWip}
                               value={wip.firstname}
-                              isValid={wip.firstname}
+                              isInvalid= {!wip.firstname}
+                              isValid={formIsValid()}
                               required/>
                 <Form.Control.Feedback type="invalid">
                   Please enter valid name format.
@@ -128,10 +153,12 @@ const StepOne = (props) => {
             <Form.Group controlId="formLastname">
               <InputGroup hasValidation>
                 <Form.Control type="text"
+                              placeholder="Enter your last name"
                               name={"lastname"}
                               onChange={updateWip}
-                              placeholder="Enter your last name"
-                              isValid={wip.lastname}
+                              value={wip.lastname}
+                              isInvalid={!wip.lastname}
+                              isValid={formIsValid()}
                               required/>
                 <Form.Control.Feedback type="invalid">
                   Please enter valid last name format.
@@ -145,7 +172,11 @@ const StepOne = (props) => {
                 <InputGroup.Prepend>
                   <InputGroup.Text>Country</InputGroup.Text>
                 </InputGroup.Prepend>
-                <Form.Control as="select" name="country" onChange={updateWip}>
+                <Form.Control
+                    as="select"
+                    name="country"
+                    onChange={updateWip}
+                    >
                   {data.countries.map(country => <option key={country}
                                                          selected={wip.country === country}>
                     {country}
@@ -160,7 +191,11 @@ const StepOne = (props) => {
                 <InputGroup.Prepend>
                   <InputGroup.Text>City</InputGroup.Text>
                 </InputGroup.Prepend>
-                <Form.Control as="select" name="city" onChange={updateWip}>
+                <Form.Control
+                    as="select"
+                    name="city"
+                    onChange={updateWip}
+                    >
                   {data.cities.map(city =>
                     <option key={city} selected={wip.city === city}>{city}</option>)}
                 </Form.Control>
@@ -170,10 +205,14 @@ const StepOne = (props) => {
             {/* address */}
             <Form.Group controlId="formAddress">
               <InputGroup hasValidation>
-                <Form.Control type="text" required isValid={wip.address} placeholder="Enter your address"
-                              value={wip.address}
-                              onChange={updateWip}
-                              name="address"/>
+                <Form.Control
+                    type="text"
+                    required placeholder="Enter your address"
+                    value={wip.address}
+                    onChange={updateWip}
+                    isInvalid={!wip.address}
+                    isValid={formIsValid()}
+                    name="address"/>
                 <Form.Control.Feedback type="invalid">
                   Please enter valid address format.
                 </Form.Control.Feedback>
@@ -183,14 +222,16 @@ const StepOne = (props) => {
             {/* postal code */}
             <Form.Group controlId="formPostalCode">
               <InputGroup hasValidation>
-                <Form.Control type="text"
-                              placeholder={"Enter your postal code"}
-                              value={wip.zipCode}
-                              onChange={updateWip}
-                              pattern="[0-9]{5}"
-                              name="zipCode"
-                              isValid={wip.zipCode}
-                              required
+                <Form.Control
+                    type="number"
+                    placeholder={"Enter your postal code"}
+                    value={wip.postalCode}
+                    onChange={updateWip}
+                    pattern="[0-9]{5}"
+                    name="postalCode"
+                    isInvalid={!wip.postalCode}
+                    isValid={formIsValid()}
+                    required
                 />
                 <Form.Control.Feedback type="invalid">
                   Please enter valid postal code format.
@@ -217,8 +258,11 @@ const StepOne = (props) => {
                 <InputGroup.Prepend>
                   <InputGroup.Text>Shipping country</InputGroup.Text>
                 </InputGroup.Prepend>
-                <Form.Control as="select" disabled={wip.shippingAddressToggled} onChange={updateWip}
-                              name="shippingCountry">
+                <Form.Control
+                    as="select"
+                    disabled={wip.shippingAddressToggled}
+                    onChange={updateWip}
+                    name="shippingCountry">
                   {data.countries.map(country => <option key={country}
                                                          selected={wip.shippingCountry === country}>
                     {country}
@@ -234,8 +278,11 @@ const StepOne = (props) => {
                 <InputGroup.Prepend>
                   <InputGroup.Text>Shipping city</InputGroup.Text>
                 </InputGroup.Prepend>
-                <Form.Control as="select" disabled={wip.shippingAddressToggled} onChange={updateWip}
-                              name="shippingCity">
+                <Form.Control
+                    as="select"
+                    disabled={wip.shippingAddressToggled}
+                    onChange={updateWip}
+                    name="shippingCity">
                   {data.shippingCities.map(city => <option key={city}
                                                            selected={wip.shippingCity === city}>{city}</option>)}
                 </Form.Control>
@@ -246,13 +293,16 @@ const StepOne = (props) => {
             {/* address */}
             <Form.Group controlId="formShippingAddress">
               <InputGroup hasValidation>
-                <Form.Control type="text" isValid={wip.shippingAddress}
-                              placeholder="Enter your shipping address"
-                              value={wip.shippingAddress}
-                              disabled={wip.shippingAddressToggled}
-                              onChange={updateWip}
-                              name="shippingAddress"
-                              required
+                <Form.Control
+                    type="text"
+                    isInvalid={!wip.shippingAddress}
+                    isValid={formIsValid()}
+                    placeholder="Enter your shipping address"
+                    value={wip.shippingAddress}
+                    disabled={wip.shippingAddressToggled}
+                    onChange={updateWip}
+                    name="shippingAddress"
+                    required
                 />
                 <Form.Control.Feedback type="invalid">
                   Please enter valid address format.
@@ -264,14 +314,16 @@ const StepOne = (props) => {
             {/* postal code */}
             <Form.Group controlId="formShippingPostalCode">
               <InputGroup hasValidation>
-                <Form.Control type="text"
-                              placeholder={"Enter your shipping postal code"}
-                              disabled={wip.shippingAddressToggled}
-                              isValid={wip.shippingZipCode}
-                              value={wip.shippingZipCode}
-                              onChange={updateWip}
-                              name="shippingZipCode"
-                              required
+                <Form.Control
+                    type="number"
+                    placeholder={"Enter your shipping postal code"}
+                    disabled={wip.shippingAddressToggled}
+                    isInvalid={!wip.shippingPostalCode}
+                    isValid={formIsValid()}
+                    value={wip.shippingPostalCode}
+                    onChange={updateWip}
+                    name="shippingPostalCode"
+                    required
                 />
                 <Form.Control.Feedback type="invalid">
                   Please enter valid postal code format.
@@ -281,7 +333,7 @@ const StepOne = (props) => {
 
             {/*  submit button */}
             <Button variant="primary" type="submit" className={"px-3"} onClick={() => onNext(wip)} disabled={!formIsValid()}>
-              Submit
+              Next
             </Button>
           </Form>
         </Col>
