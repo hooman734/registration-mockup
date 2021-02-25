@@ -119,14 +119,15 @@ const StepOne = props => {
             {/* first name field */}
             <Form.Group controlId="formFirstname">
               <InputGroup hasValidation>
-                <Form.Control type="text"
-                              placeholder={"Enter your first name"}
-                              name={"firstname"}
-                              onChange={updateWip}
-                              value={wip.firstname}
-                              isInvalid= {!wip.firstname}
-                              isValid={formIsValid()}
-                              required/>
+                <Form.Control
+                    type="text"
+                    placeholder={"Enter your first name"}
+                    name={"firstname"}
+                    onChange={updateWip}
+                    value={wip.firstname}
+                    isInvalid= {!wip.firstname}
+                    isValid={formIsValid()}
+                    required/>
                 <Form.Control.Feedback type="invalid">
                   Please enter valid name format.
                 </Form.Control.Feedback>
